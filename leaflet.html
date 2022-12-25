@@ -14,6 +14,14 @@
     <script src="L.Control.Opacity.js"></script>
     <link href="L.Control.Opacity.css" rel="stylesheet" />
 
+
+
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet"></script>
+    <!-- Esri Leaflet Geocoder -->
+    <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css" />
+    <script src="https://unpkg.com/esri-leaflet-geocoder"></script>
+
     <style>
         body {
             margin: 0;
@@ -21,42 +29,28 @@
         }
 
         body,
-        table,
-        tr,
-        td,
-        th,
-        div,
-        h1,
-        h2,
-        input {
-            font-family: "Calibri", "Trebuchet MS", "Ubuntu", Serif;
-            font-size: 11pt;
+        html {
+            height: 100%;
+            font-family: Arial;
         }
 
         #map {
-            position: absolute;
-            top: 0;
-            bottom: 0;
             width: 100%;
+            height: 100%;
+            z-index: 100;
         }
 
-        /* full size */
-        .ctl {
-            padding: 2px 10px 2px 10px;
-            background: white;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            text-align: right;
-        }
-
-        .title {
-            font-size: 18pt;
-            font-weight: bold;
-        }
-
-        .src {
+        #mapSearchContainer {
+            position: fixed;
+            top: 20px;
+            right: 40px;
+            height: 30px;
+            width: 180px;
+            z-index: 110;
             font-size: 10pt;
+            color: #5d5d5d;
+            border: solid 1px #bbb;
+            background-color: #f8f8f8;
         }
     </style>
 
@@ -120,6 +114,30 @@
                 label: 'Layers Opacity',
             })
             .addTo(map);
+
+
+
+        // create the geocoding control and add it to the map
+        var searchControl = L.esri.Geocoding.geosearch({
+            providers: [
+                L.esri.Geocoding.arcgisOnlineProvider({
+                    // API Key to be passed to the ArcGIS Online Geocoding Service
+                    apikey: "AAPKc507468e92a9497f95df17dc2881db6bKho4FvJSgeTraGh6966lg0_hwzdGpG4CXBVx7gTIYa9aEjao4MENdHAJb7Lg1XM7"
+                })
+            ]
+        }).addTo(map);
+
+        // create an empty layer group to store the results and add it to the map
+        var results = L.layerGroup().addTo(map);
+
+        // listen for the results event and add every result to the map
+        searchControl.on("results", function (data) {
+            results.clearLayers();
+            for (var i = data.results.length - 1; i >= 0; i--) {
+                results.addLayer(L.marker(data.results[i].latlng));
+            }
+        });
+
 
         const spreadsheet = `https://docs.google.com/spreadsheets/d/e/2PACX-1vSItCh11uqL8fvGmy3ot7-ABhgI42nviOkeleQipeePtOhoP7fG5HUgUBC9-SD05NPiGey6pPIEi-QJ/pub?output=csv`
         d3.csv(spreadsheet)
