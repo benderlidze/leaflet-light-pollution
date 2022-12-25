@@ -95,14 +95,17 @@
             tms: true,
             opacity: 0.7,
             attribution: "",
-            minZoom: 0,
+            minZoom: 5,
             maxNativeZoom: 8,
             maxZoom: 20
         });
 
         //MAP
         const map = L.map('map', {
-            center: [37.92686760148135, -41.92382812500001],
+            center: {
+                "lat": 37.92686760148135,
+                "lng": -41.92382812500001
+            },
             zoom: 3,
             zoomControl: true,
             layers: [osm],
@@ -149,9 +152,8 @@
                             <div>${descr}</div>
                         </div>
                     `
-                    const marker = L.marker([+lat, +lng])
-                        .addTo(map)
-                        .bindPopup(text);
+                    const marker = L.marker([+lat, +lng]).addTo(map)
+                        .bindPopup(text).openPopup();
                     return marker
                 })
             })
