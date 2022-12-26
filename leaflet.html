@@ -89,11 +89,8 @@
 
         //BaseLayer
         const Map_BaseLayer = {
-            'OSM': osm,
-            'OSM Topo': osmTopo,
-            'CARTO': cartodb,
-            'toner': toner,
-            'empty': white,
+            'Street map': osm,
+            'Topo Map': osmTopo,
         };
 
         //AddLayer
@@ -130,7 +127,7 @@
         const results = L.layerGroup().addTo(map);
 
         const markerLayerGroup = L.layerGroup().addTo(map);
-        layerControl.addOverlay(markerLayerGroup, "Parks");
+        layerControl.addOverlay(markerLayerGroup, "Campgrounds");
 
         // listen for the results event and add every result to the map
         searchControl.on("results", function (data) {
