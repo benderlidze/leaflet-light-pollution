@@ -68,8 +68,6 @@
         const toner = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', { attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.' });
         const white = L.tileLayer("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABmvDolAAAAA1BMVEX///+nxBvIAAAAH0lEQVQYGe3BAQ0AAADCIPunfg43YAAAAAAAAAAA5wIhAAAB9aK9BAAAAABJRU5ErkJggg==");
 
-
-
         // Overlay layers (TMS)
         const lyr = L.tileLayer('https://serg.one/leaflet-light-pollution-tiles/{z}/{x}/{y}.png', {
             tms: true,
@@ -103,8 +101,9 @@
             'Light pollution': lyr,
         };
 
+
         //LayerControl
-        L.control
+        const layerControl = L.control
             .layers(Map_BaseLayer, Map_AddLayer, {
                 collapsed: false,
             })
@@ -117,8 +116,6 @@
             })
             .addTo(map);
 
-
-
         // create the geocoding control and add it to the map
         var searchControl = L.esri.Geocoding.geosearch({
             providers: [
@@ -130,7 +127,10 @@
         }).addTo(map);
 
         // create an empty layer group to store the results and add it to the map
-        var results = L.layerGroup().addTo(map);
+        const results = L.layerGroup().addTo(map);
+
+        const markerLayerGroup = L.layerGroup().addTo(map);
+        layerControl.addOverlay(markerLayerGroup, "Parks");
 
         // listen for the results event and add every result to the map
         searchControl.on("results", function (data) {
@@ -139,7 +139,6 @@
                 results.addLayer(L.marker(data.results[i].latlng));
             }
         });
-
 
         const spreadsheet = `https://docs.google.com/spreadsheets/d/e/2PACX-1vSItCh11uqL8fvGmy3ot7-ABhgI42nviOkeleQipeePtOhoP7fG5HUgUBC9-SD05NPiGey6pPIEi-QJ/pub?output=csv`
         d3.csv(spreadsheet)
@@ -158,6 +157,7 @@
                     const marker = L.marker([+lat, +lng])
                         .addTo(map)
                         .bindPopup(text);
+                    marker.addTo(markerLayerGroup);
                     return marker
                 })
             })
