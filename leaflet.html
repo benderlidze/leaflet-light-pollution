@@ -68,6 +68,14 @@
         const toner = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', { attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.' });
         const white = L.tileLayer("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABmvDolAAAAA1BMVEX///+nxBvIAAAAH0lEQVQYGe3BAQ0AAADCIPunfg43YAAAAAAAAAAA5wIhAAAB9aK9BAAAAABJRU5ErkJggg==");
 
+        //MAP
+        const map = L.map('map', {
+            center: [34.849875, -103.666992],
+            zoom: 4,
+            zoomControl: true,
+            layers: [osm],
+        });
+
         // Overlay layers (TMS)
         const lyr = L.tileLayer('https://rwtadventures.com/maptiles/{z}/{x}/{y}.png', {
             tms: true,
@@ -77,15 +85,8 @@
             maxNativeZoom: 7,
             maxZoom: 20,
             attribution: '&copy; <a href="https://datapub.gfz-potsdam.de/download/10.5880.GFZ.1.4.2016.001/">dataservices.gfz-potsdam.de</a>'
-        });
+        }).addTo(map)
 
-        //MAP
-        const map = L.map('map', {
-            center: [37.92686760148135, -41.92382812500001],
-            zoom: 3,
-            zoomControl: true,
-            layers: [osm],
-        });
 
         //BaseLayer
         const Map_BaseLayer = {
@@ -94,21 +95,23 @@
         };
 
         //AddLayer
-        const Map_AddLayer = {
+        const LightPoluttionLayer = {
             'Light Pollution': lyr,
         };
 
 
         //LayerControl
         const layerControl = L.control
-            .layers(Map_BaseLayer, Map_AddLayer, {
+            .layers(Map_BaseLayer, LightPoluttionLayer, {
                 collapsed: false,
             })
-            .addTo(map);
+
+        layerControl.addTo(map)
+
 
         //OpacityControl
         L.control
-            .opacity(Map_AddLayer, {
+            .opacity(LightPoluttionLayer, {
                 label: 'Layers Opacity',
             })
             .addTo(map);
